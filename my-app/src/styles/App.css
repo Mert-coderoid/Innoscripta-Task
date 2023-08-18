@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*override tailwind classes here*/
+.bg-blue-500 {
+  background-color: #657786;
+}
+
+.text-green-600 {
+  color: #657786;
+}
+
+.bg-green-500 {
+  background-color: #0068a9;
+}
+
+/*.hover:bg-green-700*/
+.bg-green-700 {
+  background-color: #0056
+}
+
+.text-blue-700 {
+  color: #0068a9;
+}
+
+.text-blue-600 {
+  color: #0068a9;
+}
+
+.text-red-400 {
+  color: #d93025;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.margin-left-0 {
+  margin-left: 0;
+}
+
+.position-left-0 {
+    left: 0;
+}
+
+.loading::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../public/loading.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100px;
+  z-index: 9999;
+  background-color: white;
+}

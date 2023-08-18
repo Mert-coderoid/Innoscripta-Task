@@ -1,0 +1,1 @@
+0 */12 * * * /usr/local/bin/php /var/www/html/artisan articles:fetch >> /var/log/cron.log 2>&1
