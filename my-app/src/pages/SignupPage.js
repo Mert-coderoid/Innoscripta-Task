@@ -13,13 +13,13 @@ const SignupPage = () => {
         const newErrors = {};
 
         // Form alanlarını kontrol ederek hataları ayarla
-        if (!username) newErrors.username = "Kullanıcı adı gereklidir.";
-        if (username.length < 3) newErrors.username = "Kullanıcı adı en az 3 karakter olmalıdır.";
-        if (!email) newErrors.email = "E-posta gereklidir.";
-        if (!password) newErrors.password = "Şifre gereklidir.";
-        if (password.length < 6) newErrors.password = "Şifre en az 6 karakter olmalıdır.";
-        if (!passwordConfirm) newErrors.passwordConfirm = "Şifre tekrar alanı gereklidir.";
-        if (password !== passwordConfirm) newErrors.passwordConfirm = "Şifreler eşleşmiyor.";
+        if (!username) newErrors.username = "Username required.";
+        if (username.length < 3) newErrors.username = "Username must be at least 3 characters.";
+        if (!email) newErrors.email = "E-mail required.";
+        if (!password) newErrors.password = "Password required.";
+        if (password.length < 6) newErrors.password = "Password must be at least 6 characters.";
+        if (!passwordConfirm) newErrors.passwordConfirm = "Password confirm required.";
+        if (password !== passwordConfirm) newErrors.passwordConfirm = "Passwords do not match.";
 
         setErrors(newErrors);
 
@@ -87,7 +87,13 @@ const SignupPage = () => {
                     />
                     <button className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Kayıt Ol</button>
                 </form>
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+                {errors.passwordConfirm && <p className="text-red-500 text-sm mt-1">{errors.passwordConfirm}</p>}
                 {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
+                {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
+
+
 
             </div>
         </div>

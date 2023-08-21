@@ -216,7 +216,7 @@ const UserProfile = () => {
                     alert(data.error);
                 }
                 if (data.email) {
-                    alert('Şifre başarıyla değiştirildi.');
+                    alert('Password changed successfully.');
                     setOldPassword('');
                     setNewPassword('');
                     setNewPassword_repeat('');

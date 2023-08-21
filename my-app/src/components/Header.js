@@ -74,15 +74,15 @@ function Header() {
                 <div className={`absolute w-full bg-primary ${isOpen ? 'block mt-36' : 'hidden'} md:relative md:flex md:w-auto md:bg-transparent position-left-0 z-index-99`}>
                     {!isAuthenticated && (
                         <>
-                            <a href="/login" className="text-white px-2 md:px-4 block py-1"><i className="fas fa-sign-in-alt mr-2"></i>Giriş</a>
-                            <a href="/register" className="text-white px-2 md:px-4 block py-1"><i className="fas fa-user-plus mr-2"></i>Kayıt</a>
+                            <a href="/login" className="text-white px-2 md:px-4 block py-1"><i className="fas fa-sign-in-alt mr-2"></i>Login</a>
+                            <a href="/register" className="text-white px-2 md:px-4 block py-1"><i className="fas fa-user-plus mr-2"></i>Register</a>
                         </>
                     )}
                     {isAuthenticated && (
                         <>
-                            <a href="/feed" className="text-white px-2 md:px-4 block py-1"><i className="fas fa-newspaper mr-2"></i>Özel Haberler</a>
-                            <a href="/profile" className="text-white px-2 md:px-4 block py-1"><i className="fas fa-user mr-2"></i>Profilim</a>
-                            <a href="/" onClick={logout} className="text-white px-2 md:px-4 block py-1"><i className="fas fa-sign-out-alt mr-2"></i>Çıkış</a>
+                            <a href="/feed" className="text-white px-2 md:px-4 block py-1"><i className="fas fa-newspaper mr-2"></i>News Feed</a>
+                            <a href="/profile" className="text-white px-2 md:px-4 block py-1"><i className="fas fa-user mr-2"></i>Profile</a>
+                            <a href="/" onClick={logout} className="text-white px-2 md:px-4 block py-1"><i className="fas fa-sign-out-alt mr-2"></i>Logout</a>
                         </>
                     )}
                 </div>
