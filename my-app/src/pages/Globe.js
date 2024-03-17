@@ -143,6 +143,7 @@ const Globe = () => {
 
             });
     }, [token]);
+
     const handlePreferencesUpdate = (type, value) => {
 
 
@@ -201,18 +202,45 @@ const Globe = () => {
         autoplay: true,
         autoplaySpeed: 3000,
         pauseOnHover: true,
-    };
+        nextArrow: <SlickArrowRight />,
+        prevArrow: <SlickArrowLeft />
+    };    
 
+    function SlickArrowLeft({ className, style, onClick }) {
+        return (
+          <div
+            className={`${className} custom-left-arrow`}
+            style={{ ...style, display: "block" }}
+            onClick={onClick}
+          />
+        );
+      }
+      
+      function SlickArrowRight({ className, style, onClick }) {
+        return (
+          <div
+            className={`${className} custom-right-arrow`}
+            style={{ ...style, display: "block" }}
+            onClick={onClick}
+          />
+        );
+      }
+
+      
     return (
         // Scene
         <div>
-            <div className={`container mx-auto p-4 bg-pastelBej text-pastelGri ${isLoading ? 'loading' : ''}`}>
+            <div className={`container mx-auto p-4 text-left ${isLoading ? 'loading' : ''}`}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="rounded-lg p-4">
                         <TopArticles articles={articles} />
                     </div>
                     <div className="rounded-lg p-4">
-                        {/* en üste yasla */}
+                        {/* bir div içinde live anlamına gelen <span className="live-dot-shining"></span> ve yanından Live News yazısı gelecek */}
+                        <div className="live-news-container text-center">
+                            <span className="live-dot-shining" style={{ marginRight: '30px', padding: '5px' }}></span>
+                            <span className="live-news-text font-semibold">Live News</span>
+                        </div>
                         <Scene newsLocations={locationArticles} />
                     </div>
                     <div className="rounded-lg p-4">
@@ -220,23 +248,52 @@ const Globe = () => {
                             <div key={article.id} className="mb-4">
                                 <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
                                 <p className="text-sm mb-2">{article.description}</p>
-                                <p className="text-sm mb-3">
+                                <p className="text-sm mb-3 article-published-at">
                                     Published: {new Date(article.published_at).toLocaleDateString()}
                                 </p>
-                                {/* çizgi çek */}
                                 <hr />
                             </div>
                         ))}
                     </div>
                 </div>
+                
+                <div className="bg-black p-4 rounded-lg mx-auto">
+                    <Slider {...sliderSettings} className="slider">
+                        {articles.slice(Math.max(articles.length - 5, 1)).map((article) => (
+                            <div key={article.id} className="text-white">
+                                <div className="flex justify-center items-center mb-4">
+                                    <img
+                                        src={article.image_url || 'default-image.jpg'}
+                                        alt={article.title}
+                                        className="object-cover rounded mb-4"
+                                        style={{ height: "12rem", width: "auto" }} 
+                                    />
+                                </div>
+                                <div className="text-center">
+                                <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
+                                <p className="text-sm mb-2">{article.description}</p>
+                                <p className="text-sm mb-2">
+                                    Published: {new Date(article.published_at).toLocaleDateString()}
+                                </p>
+                                </div>
+                            </div>
+                        ))}
+                    </Slider>
+                </div>
+                
 
 
-                <div className="mb-8 bg-pastelGri p-4 rounded-lg">
-                    <h1 className="text-3xl font-semibold mb-4 p-4 bg-pastelGri rounded-lg all-upper-cool-font">
+                <div className="mb-8 p-4 rounded-lg text-center">
+                    <h1 className="text-3xl font-semibold mb-4 p-4 rounded-lg all-upper-cool-font">
                         You can find the latest news here.
                     </h1>
                     <input type="text" name="keyword" placeholder="Search"
                         onChange={handleFilterChange}
+                        onKeyPress={(event) => {
+                            if (event.key === 'Enter') {
+                                applyFilters(1);
+                            }
+                        }}
                         className="border p-2 rounded mr-2 mb-2 bg-white" />
                     <select name="category" onChange={handleFilterChange} className="border p-2 rounded mr-2 mb-2 bg-white">
                         <option value="">All Categories</option>
@@ -333,14 +390,19 @@ const Globe = () => {
                                         </div>
                                     </div>
                                 )}
-                                <p className="text-sm mb-2">
-                                    Published: {new Date(article.published_at).toLocaleDateString()}
-                                </p>
+                                {/* bir div içerisinde solda published tarihi sağda ise read more butonu olacak */}
+
+                                <div className="flex justify-between items-center">
+                                    <p className="text-sm mb-3 article-published-at">
+                                        Published: {new Date(article.published_at).toLocaleDateString()}
+                                    </p>
+                                    <a href={article.url} target="_blank"
+                                        className=" px-4 py-2 rounded hover:bg-blue-600">Read More
+                                    </a>
+                                </div>        
 
                             </div>
-                            <a href={article.url} target="_blank" rel="noopener noreferrer"
-                                className="text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 self-end mt-4">Read
-                                more</a>
+
                         </div>))}
                 </div>
                 <div className="flex justify-center mt-4 space-x-2">

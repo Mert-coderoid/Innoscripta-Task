@@ -206,10 +206,10 @@ const HomePage = () => {
     return (
         // Scene
         <div>
-            <div className="container mx-auto p-4 bg-pastelBej text-pastelGri" style={{ height: '50vh' }}>
+            <div className="container mx-auto p-4" style={{ height: '50vh' }}>
                 <Scene />
             </div>
-            <div className={`container mx-auto p-4 bg-pastelBej text-pastelGri ${isLoading ? 'loading' : ''}`}>
+            <div className={`container mx-auto p-4 ${isLoading ? 'loading' : ''}`}>
                 <svg id='patternId' width='100%' height='70%'
                     style={{ position: 'absolute', top: 0, left: 0, zIndex: -1 }}
                     xmlns='http://www.w3.org/2000/svg'>
@@ -245,7 +245,7 @@ const HomePage = () => {
                         ))}
                     </Slider>
                 </div>
-                <div className="mb-8 bg-pastelGri p-4 rounded-lg">
+                <div className="mb-8 p-4 rounded-lg">
                     <h1 className="text-3xl font-semibold mb-4 p-4">
                         You can find the latest news here.
                     </h1>

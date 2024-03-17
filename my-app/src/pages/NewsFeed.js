@@ -155,7 +155,7 @@ const NewsFeed = () => {
     };
 
     return (
-        <div className={`container mx-auto p-4 bg-pastelBej text-pastelGri ${isLoading ? 'loading' : ''}`}>
+        <div className={`container mx-auto p-4 ${isLoading ? 'loading' : ''}`}>
             <svg id='patternId' width='100%' height='70%'
                  style={{position: 'absolute', top: 0, left: 0, zIndex: -1}}
                  xmlns='http://www.w3.org/2000/svg'>
@@ -167,7 +167,7 @@ const NewsFeed = () => {
                     {errorMessage}
                 </div>
             )}
-            <div className="mb-8 bg-pastelGri p-4 rounded-lg">
+            <div className="mb-8 p-4 rounded-lg">
                 <input type="text" name="keyword" placeholder="Search" onChange={handleFilterChange}
                        className="border p-2 rounded mr-2 mb-2 bg-white"/>
                 <select name="category" onChange={handleFilterChange} className="border p-2 rounded mr-2 mb-2 bg-white">
