@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=dbo_laravel
+      - MYSQL_USER=user3
+      - MYSQL_PASSWORD=123123123
+      - MYSQL_ROOT_PASSWORD=123123123
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+    ports:
+      - "3306:3306"
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+volumes:
+  db_data: {}
+  

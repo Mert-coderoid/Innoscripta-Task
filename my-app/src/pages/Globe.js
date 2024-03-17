@@ -29,6 +29,7 @@ const Globe = () => {
         authors: [], categories: [], sources: []
     });
     const [locationArticles, setLocationArticles] = useState([]);
+    const [noPhotoArticles, setNoPhotoArticles] = useState([]);
 
     const parseJSONSafely = (value) => {
         try {
@@ -44,6 +45,7 @@ const Globe = () => {
 
     const applyFilters = (page = 1) => {
         const query = new URLSearchParams();
+        filters.has_image = "yes";
         for (const [key, value] of Object.entries(filters)) {
             if (value) {
                 query.append(key, value);
@@ -76,30 +78,41 @@ const Globe = () => {
             });
     };
 
+    const fetchNoPhotoArticles = (page = 1) => {
+        const query = new URLSearchParams();
+        filters.has_image = "no";
+        for (const [key, value] of Object.entries(filters)) {
+            if (value) {
+                query.append(key, value);
+            }
+        }
+        fetch(process.env.REACT_APP_BASE_URL + `/api/filter-articles?page=${page}&${query.toString()}&sort_order=${filters.sort_order}`, {
+            method: 'GET', headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setNoPhotoArticles(data.data);
+                console.log('No Photo Articles:', data)
+            })
+            .catch((error) => {
+                console.error('Sources loading failed:', error);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
+
     const handlePageChange = (url) => {
         const page = new URL(url).searchParams.get("page");
         applyFilters(page);
     };
 
-    // http://localhost:8080/api/location-articles
-    const fetchLocationArticles = () => {
-        fetch(process.env.REACT_APP_BASE_URL + '/api/location-articles', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${token}` },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setLocationArticles(data);
-                console.log('Location Articles:', data);
-            })
-            .catch((error) => {
-                console.error('Location Articles loading failed:', error);
-            });
-    };
-
-
     useEffect(() => {
         applyFilters();
+        fetchNoPhotoArticles();
+
         fetch(process.env.REACT_APP_BASE_URL + '/api/preferences', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
@@ -244,14 +257,20 @@ const Globe = () => {
                         <Scene newsLocations={locationArticles} />
                     </div>
                     <div className="rounded-lg p-4">
-                        {articles.slice(0, 4).map((article) => (
+                        {noPhotoArticles.slice(0, 5).map((article) => (
+                            // show no photo articles here with link to read more
                             <div key={article.id} className="mb-4">
                                 <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
                                 <p className="text-sm mb-2">{article.description}</p>
-                                <p className="text-sm mb-3 article-published-at">
-                                    Published: {new Date(article.published_at).toLocaleDateString()}
-                                </p>
-                                <hr />
+                                <div className="flex justify-between items-center">
+                                    <p className="text-sm mb-3 article-published-at">
+                                        Published: {new Date(article.published_at).toLocaleDateString()}
+                                    </p>
+                                    <a href={article.url} target="_blank"
+                                        className=" px-4 py-2 rounded hover:bg-blue-600">Read More
+                                    </a>
+                                    </div>
+
                             </div>
                         ))}
                     </div>

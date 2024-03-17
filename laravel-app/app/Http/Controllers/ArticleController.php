@@ -76,7 +76,16 @@ class ArticleController extends Controller
     public function filterArticles(Request $request): JsonResponse
     {
         $query = Article::query();
-
+    
+        // Resimli ve Resimsiz Makaleler için Filtreleme
+        if ($request->has('has_image')) {
+            if ($request->has_image === 'yes') {
+                $query->whereNotNull('image_url')->where('image_url', '<>', '');
+            } elseif ($request->has_image === 'no') {
+                $query->whereNull('image_url')->orWhere('image_url', '=', '');
+            }
+        }
+    
         // Anahtar kelime araması
         if ($request->keyword) {
             $query->where(function ($query) use ($request) {
@@ -85,37 +94,36 @@ class ArticleController extends Controller
                     ->orWhere('keywords', 'LIKE', '%' . $request->keyword . '%');
             });
         }
-
+    
         // Kategoriye göre filtreleme
         if ($request->category) {
             $query->where('category', $request->category);
         }
-
+    
         // Kaynaklara göre filtreleme
         if ($request->sources) {
-            $sources = explode(',', $request->sources); // Virgülle ayrılmış dizgeyi diziye dönüştürün
+            $sources = explode(',', $request->sources);
             $query->whereIn('source', $sources);
         }
-
+    
         // Tarih aralığına göre filtreleme
         if ($request->start_date && $request->end_date) {
             $query->whereBetween('published_at', [$request->start_date, $request->end_date]);
         }
-
+    
         // Sıralama
-        if ($request->sort_by) {
-            $sortOrder = strtolower($request->sort_order ?? 'desc');
-            if (!in_array($sortOrder, ['asc', 'desc'])) {
-                $sortOrder = 'desc';
-            }
-            $query->orderBy($request->sort_by, $sortOrder);
+        $sortOrder = strtolower($request->sort_order ?? 'desc');
+        $sortBy = $request->sort_by ?? 'published_at'; // Varsayılan olarak 'published_at' kullanılır
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'desc';
         }
-
-
+        $query->orderBy($sortBy, $sortOrder);
+    
         $articles = $query->paginate(15);
-
+    
         return response()->json($articles);
     }
+    
 
     public function getLocationArticles(): JsonResponse
     {
