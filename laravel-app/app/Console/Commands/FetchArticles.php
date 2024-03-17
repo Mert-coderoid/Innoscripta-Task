@@ -40,6 +40,11 @@ class FetchArticles extends Command
         $articleController = new ArticleController();
         $articleController->fetchArticles( new NewsAPIService(), new TimesService(), new GuardianService() );
         $this->info('Articles fetched successfully');
+        
+        // Yeni eklenen kısım: Makalelerin yer ve koordinat bilgilerini güncelleme
+        $locationService = new ArticleLocationService();
+        $locationService->updateArticleLocations(); // Bu metod, makaleler için yer ve koordinat bilgilerini günceller.
+        $this->info('Article locations updated successfully.');
     }
 
 }

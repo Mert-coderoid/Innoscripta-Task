@@ -99,3 +99,68 @@
 .z-index-99 {
   z-index: 99;
 }
+
+.tooltip {
+  color: black;
+  background-color: white;
+  padding: 2px 4px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  width: 300px;
+  z-index: 9999;
+}
+
+
+.top-articles-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.top-article {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.article-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.article-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.article-description {
+  font-size: 0.875rem;
+}
+
+.article-published-at {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.globe-container {
+  position: relative;
+  height: 500px; /* Kürenin yüksekliğini ayarlayabilirsiniz */
+  width: 100%;
+}
+
+.globe-canvas {
+  position: absolute;
+  top: 0; /* En üste yerleştir */
+}
+
+.all-upper-cool-font {
+  text-transform: uppercase;
+  /* Rozha One */
+  font-family: 'Rozha One', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: 0.07em;
+}

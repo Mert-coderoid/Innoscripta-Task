@@ -6,10 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-        public function up()
+    public function up()
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -21,15 +18,17 @@ return new class extends Migration
             $table->string('keywords', 1000)->default('');
             $table->string('url')->unique();
             $table->string('image_url', 1000)->default('');
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->string('location', 1000)->nullable();
             $table->timestamps();
             $table->timestamp('published_at')->useCurrent();
             $table->text('content')->nullable();
         });
     }
 
-        public function down()
+    public function down()
     {
         Schema::dropIfExists('articles');
     }
-
 };

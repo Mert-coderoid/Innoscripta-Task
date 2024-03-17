@@ -3,9 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mediapipe/tasks-vision": "^0.10.12",
+    "@react-three/drei": "^9.102.5",
+    "@react-three/fiber": "^8.15.19",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.8",
+    "d3-geo": "^3.1.1",
+    "d3-scale": "^4.0.2",
+    "leva": "^0.9.35",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-responsive-carousel": "^3.2.23",
@@ -14,6 +21,7 @@
     "react-slick": "^0.29.0",
     "slick-carousel": "^1.8.1",
     "tailwindcss": "^3.3.3",
+    "three": "^0.162.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -23,6 +23,13 @@ RUN COMPOSER_VENDOR_DIR="/srv/vendor" composer install
 
 RUN chown -R www-data:www-data /var/www/html
 
+# storage ve bootstrap/cache dizinlerine yazma izinleri verin ve sahipliği www-data kullanıcısına atayın
+RUN chown -R www-data:www-data /var/www/html \
+    && find /var/www/html/storage -type f -exec chmod 664 {} \; \
+    && find /var/www/html/storage -type d -exec chmod 775 {} \; \
+    && find /var/www/html/bootstrap/cache -type f -exec chmod 664 {} \; \
+    && find /var/www/html/bootstrap/cache -type d -exec chmod 775 {} \;
+
 COPY cronjobs /etc/cron.d/cronjobs
 RUN chmod 0644 /etc/cron.d/cronjobs
 RUN touch /var/log/cron.log

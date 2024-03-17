@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\GuardianService;
 use App\Services\NewsAPIService;
 use App\Services\TimesService;
+use App\Services\ArticleLocationService;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -15,17 +16,36 @@ use App\Models\Article;
 class ArticleController extends Controller
 {
     // CRON JOB İÇİN KULLANILAN METOD
+    // public function fetchArticles(NewsAPIService $newsAPIService, TimesService $timesService, GuardianService $guardianService, ArticleLocationService $articleLocationService): JsonResponse
     public function fetchArticles(NewsAPIService $newsAPIService, TimesService $timesService, GuardianService $guardianService): JsonResponse
     {
         try {
+            // consola işlemin başladığını gösteren bir log ekle
+            // \Log::info('Article fetching started');
+            
             $timesService->getMostPopularArticles();
             $guardianService->getPopularArticles();
             $newsAPIService->fetchArticles();
+
+            // $articleLocationService->updateArticleLocations();
 
             return response()->json(['message' => 'Articles fetched successfully'] , 200);
         } catch (\Exception $e) {
             // LOG ERROR
 //            \Log::error('An error occurred while fetching articles: ' . $e->getMessage());
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getLocations(ArticleLocationService $articleLocationService): JsonResponse
+    {
+        try {
+            $articleLocationService->updateArticleLocations();
+            
+            return response()->json(['message' => 'Locations updated successfully'] , 200);
+        } catch (\Exception $e) {
+            // LOG ERROR
+//            \Log::error('An error occurred while updating locations: ' . $e->getMessage());
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
@@ -96,6 +116,14 @@ class ArticleController extends Controller
 
         return response()->json($articles);
     }
+
+    public function getLocationArticles(): JsonResponse
+    {
+        $articles = Article::whereNotNull('latitude')->whereNotNull('longitude')->select('id', 'title', 'location', 'latitude', 'longitude')->get();
+
+        return response()->json($articles);
+    }
+
 //    örnek istek: process.env.REACT_APP_BASE_URL+'/api/filter-articles?keyword=corona&category=U.S.&sources=New York Times&start_date=2023-08-11&end_date=2023-08-13&sort_by=published_at&sort_order=desc
 
     public function testServices(NewsAPIService $newsAPIService, TimesService $timesService, GuardianService $guardianService): JsonResponse

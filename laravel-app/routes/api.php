@@ -15,6 +15,9 @@ Route::get('search-articles', [ArticleController::class, 'searchArticles']);
 Route::get('articles', [ArticleController::class, 'getArticles']);
 Route::get('search-articles', [ArticleController::class, 'searchArticles']);
 Route::get('filter-articles', [ArticleController::class, 'filterArticles']);
+// lokasyon verisi olan makalelerin isimlerini idlerini ve lokasyonlarını getirir
+Route::get('location-articles', [ArticleController::class, 'getLocationArticles']);
+
 
 Route::group(['middleware' => 'api.auth'], function () {
     Route::get('user', [LoginController::class, 'details']);
@@ -26,8 +29,10 @@ Route::group(['middleware' => 'api.auth'], function () {
     route::post('user-update', [PreferenceController::class, 'updateUser']);
     Route::post('change-password', [PreferenceController::class, 'changePassword']);
 });
+
 Route::get('sources', [ArticleController::class, 'getSources']);
 Route::get('categories', [ArticleController::class, 'getCategories']);
 
 Route::get('test-services', [ArticleController::class, 'testServices']);
 Route::get('fetch-articles', [ArticleController::class, 'fetchArticles']);
+Route::get('get-locations', [ArticleController::class, 'getLocations']);
