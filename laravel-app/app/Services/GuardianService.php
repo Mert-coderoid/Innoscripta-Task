@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Article;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 
 class GuardianService
@@ -30,20 +31,28 @@ class GuardianService
 
         $articles = json_decode($response->getBody(), true);
 
-        foreach ($articles['response']['results'] as $article) {
-            $article['source'] = $article['sectionName'];
-            $article['publishedAt'] = $article['webPublicationDate'];
-            $article['url'] = $article['webUrl'];
-            $article['image_url'] = '';
-            $article['description'] = '';
-            $article['author'] = '';
-            $article['title'] = $article['webTitle'];
-            $article['category'] = $article['pillarName'];
-            $article['keywords'] = '';
+        foreach ($articles['response']['results'] as $articleData) {
+            // Tarih-saat formatını düzeltilmiş hali
+            $publishedAtFormatted = Carbon::parse($articleData['webPublicationDate'])->format('Y-m-d H:i:s');
+            
+            $article = [
+                'source' => $articleData['sectionName'],
+                'published_at' => $publishedAtFormatted, // Düzeltme yapıldı
+                'url' => $articleData['webUrl'],
+                'image_url' => '',
+                'description' => '',
+                'author' => '',
+                'title' => $articleData['webTitle'],
+                'category' => $articleData['pillarName'],
+                'keywords' => '',
+                'content' => '', // Varsa içeriği de ekleyin
+            ];
 
-            Article::createOrUpdate($article);
+            Article::updateOrCreate(
+                ['url' => $article['url']], // URL'ye göre kontrol et
+                $article // Eğer yoksa oluşturulacak veya güncellenecek alanlar
+            );
         }
         return $articles['response']['results'];
     }
-
 }

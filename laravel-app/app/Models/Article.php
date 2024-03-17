@@ -1,19 +1,5 @@
 <?php
 
-//    #	Name	Type	Collation	Attributes	Null	Default	Comments	Extra	Action
-//1	id Primary	bigint(20)		UNSIGNED	No	None		AUTO_INCREMENT	Change Change	Drop Drop
-//2	title	varchar(255)	utf8mb4_unicode_ci		No	None			Change Change	Drop Drop
-//3	description	text	utf8mb4_unicode_ci		No	' '			Change Change	Drop Drop
-//4	author	varchar(255)	utf8mb4_unicode_ci		Yes	NULL			Change Change	Drop Drop
-//5	source	varchar(255)	utf8mb4_unicode_ci		No	None			Change Change	Drop Drop
-//6	category	varchar(1000)	utf8mb4_general_ci		No				Change Change	Drop Drop
-//7	keywords	varchar(1000)	utf8mb4_general_ci		No				Change Change	Drop Drop
-//8	url Index	varchar(255)	utf8mb4_unicode_ci		Yes	NULL			Change Change	Drop Drop
-//9	image_url	varchar(1000)	utf8mb4_unicode_ci		Yes	NULL			Change Change	Drop Drop
-//10	created_at	timestamp			Yes	NULL			Change Change	Drop Drop
-//11	updated_at	timestamp			Yes	NULL			Change Change	Drop Drop
-//12	published_at	timestamp			Yes	NULL			Change Change	Drop Drop
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,7 +23,14 @@ class Article extends Model
         'published_at',
         'category',
         'keywords',
-        'content'
+        'content',
+        'latitude',
+        'longitude',
+        'location',
+        'location_updated',
+        'created_at',
+        'updated_at',
+        'published_at'
     ];
 
     public static function createOrUpdate(array $articleData)
@@ -56,6 +49,12 @@ class Article extends Model
             'category' => $articleData['category'] ?? '',
             'keywords' => $articleData['keywords'] ?? '',
             'content' => $articleData['content'] ?? '',
+            'latitude' => $articleData['latitude'] ?? null,
+            'longitude' => $articleData['longitude'] ?? null,
+            'location' => $articleData['location'] ?? '',
+            'location_updated' => $articleData['location_updated'] ?? null,
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' => Carbon::now()->toDateTimeString()
         ]);
     }
 

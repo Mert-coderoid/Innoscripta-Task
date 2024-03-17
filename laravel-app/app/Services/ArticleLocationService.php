@@ -12,45 +12,58 @@ class ArticleLocationService
 
     public function __construct()
     {
-        $this->client = new Client(['base_uri' => 'http://flask-app:5000']);
+        // $this->client = new Client(['base_uri' => 'http://flask-app:5000']);
+        $this->client = new Client(['base_uri' => 'http://localhost:5000']);
     }
 
-    public function updateArticleLocations(): void
-    {
-        $articles = Article::whereNull('latitude')->orWhereNull('longitude')->get();
-
+    public function updateArticleLocations(): bool
+{
+    try {
+        // Only select articles that have not been processed yet
+        $articles = Article::where('location_updated', false)->get();
+                            // ->where(function ($query) {
+                            //     $query->whereNull('latitude')
+                            //           ->orWhereNull('longitude');
+                            // })->get();
+                            
+                            // dd($articles);
         if ($articles->isEmpty()) {
-            return;
+            return false;
         }
 
         $articlesData = $articles->map(function ($article) {
-            $text = $article->content ?: $article->title;
             return [
                 'id' => $article->id,
-                'text' => $text,
+                'text' => $article->content ?: $article->title,
             ];
         })->toArray();
 
-        try {
-            $response = $this->client->post('/extract-locations-batch', [
-                'json' => ['articles' => $articlesData],
-            ]);
+        $response = $this->client->post('/extract-locations-batch', [
+            'json' => ['articles' => $articlesData],
+        ]);
 
-            $locations = json_decode($response->getBody()->getContents(), true);
+        $locations = json_decode($response->getBody()->getContents(), true);
 
-            foreach ($locations['results'] as $locationData) {
-                $article = Article::find($locationData['article']['id']);
-                if (!empty($locationData['locations']) && $article) {
-                    $firstLocation = current($locationData['locations']);
-                    $article->latitude = $firstLocation['coordinates']['latitude'];
-                    $article->longitude = $firstLocation['coordinates']['longitude'];
-                    $article->location = $firstLocation['place'];
-                    $article->save();
-                }
+        foreach ($articles as $article) {
+            $locationData = collect($locations['results'])->firstWhere('article.id', $article->id);
+            
+            if ($locationData && !empty($locationData['locations'])) {
+                $firstLocation = reset($locationData['locations']);
+                $article->latitude = $firstLocation['coordinates']['latitude'] ?? null;
+                $article->longitude = $firstLocation['coordinates']['longitude'] ?? null;
+                $article->location = $firstLocation['place'] ?? null;
+                $article->location_updated = true;
             }
-        } catch (GuzzleException $e) {
-            // Log or handle the error as required
-            \Log::error("Error updating article locations: " . $e->getMessage());
+
+            $article->location_updated = true;
+            $article->save();
         }
+
+        return true;
+    } catch (GuzzleException $e) {
+        throw new \Exception('Error updating article locations: ' . $e->getMessage());
     }
+}
+
+
 }

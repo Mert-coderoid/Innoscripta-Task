@@ -1,12 +1,12 @@
 <?php
 
-
 namespace App\Services;
 
 use App\Models\Article;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Carbon\Carbon;
 
 class TimesService
 {
@@ -16,7 +16,7 @@ class TimesService
     public function __construct()
     {
         $this->client = new Client(['base_uri' => 'https://api.nytimes.com/svc/']);
-        $this->apiKey = env('NYT_API_KEY'); // .env dosyasından API anahtarını alın
+        $this->apiKey = env('NYT_API_KEY'); 
     }
 
     /**
@@ -25,8 +25,7 @@ class TimesService
     public function getMostPopularArticles($days = 1)
     {
         $endpoint = "mostpopular/v2/viewed/$days.json";
-
-//        istek atılan url: https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key=NYT_API_KEY
+        
         try {
             $response = $this->client->get($endpoint, [
                 'query' => ['api-key' => $this->apiKey]
@@ -37,6 +36,7 @@ class TimesService
 
         $data = json_decode($response->getBody(), true);
         $articles = $data['results'];
+
         foreach ($articles as $articleData) {
             $media = $articleData['media'][0] ?? null;
             $image_url = $media && isset($media['media-metadata'][2]['url']) ? $media['media-metadata'][2]['url'] : '';
@@ -49,17 +49,19 @@ class TimesService
                 'source' => $articleData['source'],
                 'url' => $articleData['url'],
                 'image_url' => $image_url,
-                'publishedAt' => $articleData['published_date'],
+                'published_at' => Carbon::parse($articleData['published_date'])->format('Y-m-d H:i:s'),
                 'category' => $category,
                 'keywords' => $keywords,
                 'content' => '',
             ];
 
-            Article::createOrUpdate($article);
+            Article::updateOrCreate(
+                ['url' => $article['url']],
+                $article
+            );
         }
 
         return $articles;
     }
-
-    // Diğer NYT API endpoint'leriyle etkileşime girecek diğer yöntemler burada olabilir.
+    
 }

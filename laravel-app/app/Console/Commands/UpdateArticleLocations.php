@@ -17,8 +17,16 @@ class UpdateArticleLocations extends Command
 
     public function handle()
     {
-        $service = new ArticleLocationService();
-        $service->updateArticleLocations();
-        $this->info('Article locations updated successfully.');
+        try {
+            $service = new ArticleLocationService();
+            $result = $service->updateArticleLocations();
+            if ($result) {
+                $this->info('Locations updated successfully');
+            } else {
+                $this->info('No articles to update');
+            }
+        } catch (\Exception $e) {
+            $this->error('Error updating article locations: ' . $e->getMessage());
+        }
     }
 }

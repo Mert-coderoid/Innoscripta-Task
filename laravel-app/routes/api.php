@@ -15,7 +15,6 @@ Route::get('search-articles', [ArticleController::class, 'searchArticles']);
 Route::get('articles', [ArticleController::class, 'getArticles']);
 Route::get('search-articles', [ArticleController::class, 'searchArticles']);
 Route::get('filter-articles', [ArticleController::class, 'filterArticles']);
-// lokasyon verisi olan makalelerin isimlerini idlerini ve lokasyonlarını getirir
 Route::get('location-articles', [ArticleController::class, 'getLocationArticles']);
 
 

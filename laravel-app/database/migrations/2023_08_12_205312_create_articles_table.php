@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->string('location', 1000)->nullable();
+            $table->boolean('location_updated')->default(false);
             $table->timestamps();
             $table->timestamp('published_at')->useCurrent();
             $table->text('content')->nullable();
