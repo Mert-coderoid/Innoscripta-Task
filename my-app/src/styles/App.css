@@ -299,8 +299,8 @@
 .sub-globe-globe-info {
 
   width: 100%;
-  height: 50%;
-  background-color: rgba(0, 0, 0, 0.5);
+  height: 40%;
+  background-color: rgb(31 41 55);
   z-index: 100;
   overflow-y: auto;
 }

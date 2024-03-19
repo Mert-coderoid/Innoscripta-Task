@@ -7,6 +7,8 @@ use App\Http\Controllers\ArticleController;
 use App\Services\GuardianService;
 use App\Services\NewsAPIService;
 use App\Services\TimesService;
+// ArticleController
+use App\Services\ArticleLocationService;
 
 
 class FetchArticles extends Command
@@ -43,6 +45,14 @@ class FetchArticles extends Command
             $this->info('Articles fetched successfully');
         } catch (\Exception $e) {
             $this->error('Error fetching articles: ' . $e->getMessage());
+        }
+
+        try {
+            $articleController = new ArticleController();
+            $articleController->getLocations( new ArticleLocationService() );
+            $this->info('Locations updated successfully');
+        } catch (\Exception $e) {
+            $this->error('Error updating locations: ' . $e->getMessage());
         }
     }
 

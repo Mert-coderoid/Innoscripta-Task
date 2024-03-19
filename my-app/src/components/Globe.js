@@ -70,6 +70,9 @@ const Scene = () => {
                     onClick: handlePointClick // onClick tanımı burada güncellendi
                 }));
                 setNewsPoints(points);
+                if (points.length > 0) {
+                    setSelectedPoint(points[0]);
+                }
             })
             .catch(error => console.error(error));
     }, []);

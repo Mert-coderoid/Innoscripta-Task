@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 nlp = spacy.load("en_core_web_sm")
 
-geolocator = Nominatim(user_agent="Gazenews")
+geolocator = Nominatim(user_agent="Gazenews-App")
 
 def geocode_location(location):
     try:

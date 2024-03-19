@@ -14,12 +14,13 @@ use App\Models\Article;
 
 class ArticleController extends Controller
 {
-    public function fetchArticles(NewsAPIService $newsAPIService, TimesService $timesService, GuardianService $guardianService): JsonResponse
+    public function fetchArticles(NewsAPIService $newsAPIService, TimesService $timesService, GuardianService $guardianService, ArticleLocationService $articleLocationService): JsonResponse
     {
         try {
             $guardianService->getPopularArticles();
             $newsAPIService->fetchArticles();
             $timesService->getMostPopularArticles();
+            $articleLocationService->updateArticleLocations();
 
             return response()->json(['message' => 'Articles fetched successfully'] , 200);
         } catch (\Exception $e) {
