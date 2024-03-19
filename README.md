@@ -61,7 +61,6 @@ During the development process, coding was done adhering to software development
 This documentation provides a general summary of my project. For further detailed information or any inquiries, please do not hesitate to contact me. Thank you for your attention.
 
 
-
 ## Full Website
 
 ![image](./documantation/screencapture-localhost-3000-2024-03-19-13_58_57.png)
@@ -77,3 +76,15 @@ This documentation provides a general summary of my project. For further detaile
 ## 3D Earth Map News
 
 ![image](./documantation/Screenshot-2024-03-19-141124.png)
+
+## Filtering Data
+
+![image](./documantation/Screenshot%202023-08-18%20215944.png)
+
+## Click follow icon to follow a author, source and category this will be shown in the news feed
+
+![image](./documantation/Screenshot%202023-08-18%20220024.png)
+
+## Click x icon to unfollow a author, source and category this will be shown in the news feed
+
+![image](./documantation/Screenshot%202023-08-18%20220134.png)
