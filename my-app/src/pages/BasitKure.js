@@ -44,7 +44,6 @@ const BasitKure = ({ onNoktaClick }) => {
 
 const Sahne = () => {
   const handleNoktaClick = (adi) => {
-    console.log(`${adi} tıklandı!`);
     // Burada haber detayları için bir modal açabilirsiniz.
   };
 

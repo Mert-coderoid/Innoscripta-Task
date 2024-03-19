@@ -11,7 +11,6 @@ const Globe = () => {
     if (!token) {
         window.location.href = '/login';
     } else {
-        console.log('Token:', token);
     }
 
     const [articles, setArticles] = useState([]);
@@ -66,7 +65,6 @@ const Globe = () => {
                     prevPageUrl: data.prev_page_url,
                 });
                 setPaginationLinks(data.links);
-                console.log('Articles:', data)
 
 
             })
@@ -94,7 +92,6 @@ const Globe = () => {
             .then((response) => response.json())
             .then((data) => {
                 setNoPhotoArticles(data.data);
-                console.log('No Photo Articles:', data)
             })
             .catch((error) => {
                 console.error('Sources loading failed:', error);

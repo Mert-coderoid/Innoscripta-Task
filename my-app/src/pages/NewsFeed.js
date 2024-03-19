@@ -89,7 +89,6 @@ const NewsFeed = () => {
             window.location.href = '/login';
             return;
         } else {
-            console.log('Token:', token);
         }
         applyFilters();
         fetch(process.env.REACT_APP_BASE_URL+'/api/preferences', {
@@ -102,7 +101,6 @@ const NewsFeed = () => {
                 let categories = data.categories ? parseJSONSafely(data.categories) : [];
                 let sources = data.sources ? parseJSONSafely(data.sources) : [];
                 let authors = data.authors ? parseJSONSafely(data.authors) : [];
-                console.log('Preferences:', data)
                 setPreferences({
                     authors: authors, categories: categories, sources: sources
                 });

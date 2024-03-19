@@ -61,7 +61,6 @@ const Scene = () => {
             // $articles = Article::whereNotNull('latitude')->whereNotNull('longitude')->select('id', 'title', 'location', 'url', 'published_at', 'latitude', 'longitude')->get();
 
             .then(response => {
-                console.log(response.data);
                 const points = response.data.map(article => ({
                     id: article.id,
                     name: article.title,

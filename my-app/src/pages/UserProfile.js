@@ -29,7 +29,6 @@ const UserProfile = () => {
             window.location.href = '/login';
             return;
         } else {
-            console.log('Token:', token);
         }
 
         const fetchData = async () => {
@@ -47,7 +46,6 @@ const UserProfile = () => {
 
             if (profileResponse.ok) {
                 const profileData = await profileResponse.json();
-                console.log(profileData);
             
                 // API'den gelen yanıtın doğru bir şekilde işlenmesi için düzeltme
                 setProfile(profileData.data.user); // `user` objesi doğrudan state'e aktarılıyor.
@@ -198,7 +196,6 @@ const UserProfile = () => {
             body: JSON.stringify({old_password: oldPassword, password: newPassword}),
         }).then((data) => data.json())
             .then((data) => {
-                console.log("data", data)
 
                 if (data.error) {
                     toast.error(data.error);
