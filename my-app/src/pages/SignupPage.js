@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const SignupPage = () => {
     const [username, setUsername] = useState('');
@@ -16,6 +17,7 @@ const SignupPage = () => {
         if (!username) newErrors.username = "Username required.";
         if (username.length < 3) newErrors.username = "Username must be at least 3 characters.";
         if (!email) newErrors.email = "E-mail required.";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = "Invalid e-mail.";
         if (!password) newErrors.password = "Password required.";
         if (password.length < 6) newErrors.password = "Password must be at least 6 characters.";
         if (!passwordConfirm) newErrors.passwordConfirm = "Password confirm required.";
@@ -33,24 +35,23 @@ const SignupPage = () => {
             },
             body: JSON.stringify({ name: username, email, password, confirm_password: passwordConfirm }),
         });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            console.log('Kayıt başarılı!', data);
-            // Token'ı kaydet
-            localStorage.setItem('token', data.token);
-
-            window.location.href = '/login';
+        
+        if (!response.ok) {
+            // Handle the error situation
+            const data = await response.json();
+            if (data.errors) {
+                setErrors(data.errors);
+            } else {
+                setErrors({ message: data.message });
+            }
+            toast.error(data.message);
+            return;
         } else {
-                const data = await response.json();
-                if (data.message === 'Unauthorized.') {
-                    localStorage.removeItem('token');
-                    window.location.href = '/';
-                }
-            setErrors(data.errors || {});
+            const data = await response.json();
+            localStorage.setItem('token', data.data.token);
+            window.location.href = '/';
         }
-    };
+    }
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">

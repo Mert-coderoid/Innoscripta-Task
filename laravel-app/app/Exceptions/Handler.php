@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -44,5 +47,29 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        $this->renderable(function (Throwable $e, $request) {
+            // Handle validation exceptions
+            if ($e instanceof ValidationException) {
+                return $this->handleValidationException($e, $request);
+            }
+        });
+    }
+
+    /**
+     * Handle a validation exception.
+     *
+     * @param  \Illuminate\Validation\ValidationException  $e
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function handleValidationException(ValidationException $e, $request): Response
+    {
+        $errors = $e->validator->getMessageBag()->toArray();
+
+        return response()->json([
+            'message' => 'The given data was invalid.',
+            'errors' => $errors,
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

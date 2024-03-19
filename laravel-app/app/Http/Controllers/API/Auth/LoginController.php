@@ -17,20 +17,27 @@ class LoginController extends Controller
      * @return JsonResponse
      */
     public function login(AuthRequest $request): JsonResponse
-    {
-        if (auth()->attempt($request->all())) {
+    {        
+        // E-posta adresi geçerli bir format içeriyor mu kontrol et
+        if (!filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+            // E-posta formatı geçersizse hata mesajı döndür
+            return $this->error(['error' => 'Invalid Email'], 'The email address is invalid.', 422);
+        }
+
+        if (auth()->attempt($request->only(['email', 'password']))) {
             $user = auth()->user();
 
             $user->tokens()->delete();
 
             $success = $user->createToken('MyApp')->plainTextToken;
 
-            return $this->success(['token' => $success], AuthConstants::LOGIN);
+            // Başarılı giriş mesajını özelleştirme
+            return $this->success(['token' => $success], 'User Login successfully.');
+        } else {
+            // Giriş bilgileri yanlışsa özel hata mesajı
+            return $this->error(['error' => 'Unauthorized'], 'Login credentials are incorrect.', 401);
         }
-
-        return $this->error([], AuthConstants::VALIDATION);
     }
-
     /**
      * @return JsonResponse
      */
@@ -47,7 +54,8 @@ class LoginController extends Controller
     public function details(): JsonResponse
     {
         $user = auth()->user();
-
-        return $this->success($user, '');
+        
+        return $this->success(['user' => $user->toArray()], AuthConstants::USER_DETAILS);
     }
+
 }

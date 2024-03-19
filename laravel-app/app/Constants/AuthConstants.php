@@ -11,4 +11,6 @@ class AuthConstants
     public const LOGOUT = 'User Logout successfully.';
     public const PERMISSION = 'You don`t have permission.';
     const UPDATE_USER = 'User updated successfully.';
+    const USER_DETAILS = 'Your user details message or code here.';
+    const USER_DELETED = 'User deleted successfully.';
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const LoginSignupPage = () => {
   const [email, setEmail] = useState('');
@@ -6,7 +7,10 @@ const LoginSignupPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error('Invalid email');
+      return;
+    }
     const response = await fetch(process.env.REACT_APP_BASE_URL+'/api/login', {
       method: 'POST',
       headers: {
@@ -15,20 +19,19 @@ const LoginSignupPage = () => {
       body: JSON.stringify({ email, password }),
     });
 
+    if (!response.ok) {
+      // Handle the error situation
+      const data = await response.json();
+      toast.error(data.message);
+      return;
+    }
     const data = await response.json();
 
     if (response.ok) {
-      console.log('Login successful!', data);
-      // Store the token to localStorage
       localStorage.setItem('token', data.data.token);
-
-      // Start the session or redirect the user here.
-      // For example, you can redirect the user to the home page.
       window.location.href = '/';
     } else {
-      // Handle the error situation
-      alert(data.message);
-      console.log('Login failed:', data);
+      toast.error(data.message);
     }
   };
 

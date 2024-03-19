@@ -8,33 +8,34 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 trait HttpResponses
 {
     /**
-     * @param $data
-     * @param string|null $message
-     * @param int $code
+     * Başarılı yanıt için yardımcı metod.
+     *
+     * @param array $data Yanıt verileri.
+     * @param string|null $message Yanıt mesajı.
+     * @param int $code HTTP durum kodu.
      * @return JsonResponse
      */
-    protected function success($data, string $message = null, int $code = ResponseAlias::HTTP_OK): JsonResponse
+    protected function success(array $data, string $message = null, int $code = ResponseAlias::HTTP_OK): JsonResponse
     {
         return response()->json([
-            'status' => '',
+            'status' => 'success', // Başarılı yanıtlar için 'success' durumu
             'message' => $message,
             'data' => $data,
         ], $code);
     }
 
     /**
-     * @param $data
-     * @param string|null $message
-     * @param int $code
+     * Hatalı yanıt için yardımcı metod.
+     *
+     * @param array $data Yanıt verileri.
+     * @param string|null $message Yanıt mesajı.
+     * @param int $code HTTP durum kodu.
      * @return JsonResponse
      */
-    protected function error(
-        $data,
-        string $message = null,
-        int $code = ResponseAlias::HTTP_BAD_REQUEST
-    ): JsonResponse {
+    protected function error(array $data, string $message = null, int $code = ResponseAlias::HTTP_BAD_REQUEST): JsonResponse
+    {
         return response()->json([
-            'status' => '',
+            'status' => 'error', // Hatalı yanıtlar için 'error' durumu
             'message' => $message,
             'data' => $data,
         ], $code);

@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {toast} from 'react-toastify';
 
 const UserProfile = () => {
     const token = localStorage.getItem('token');
@@ -23,14 +24,6 @@ const UserProfile = () => {
         authors: []
     });
 
-    const parseJSONSafely = (value) => {
-        try {
-            return JSON.parse(value.replace(/'/g, "\""));
-        } catch (e) {
-            return [];
-        }
-    };
-
     useEffect(() => {
         if (!token) {
             window.location.href = '/login';
@@ -54,15 +47,17 @@ const UserProfile = () => {
 
             if (profileResponse.ok) {
                 const profileData = await profileResponse.json();
-                console.log(profileData)
-
-                setProfile(profileData.data); // Adjusted based on the sample data provided
+                console.log(profileData);
+            
+                // API'den gelen yanıtın doğru bir şekilde işlenmesi için düzeltme
+                setProfile(profileData.data.user); // `user` objesi doğrudan state'e aktarılıyor.
             } else {
                 if (profileResponse.status === 401 || preferencesResponse.status === 401) {
                     localStorage.removeItem('token');
                     window.location.href = '/login';
                 }
             }
+            
             if (preferencesResponse.ok) {
                 const preferencesData = await preferencesResponse.json();
 
@@ -136,7 +131,7 @@ const UserProfile = () => {
             }));
             closeModal();
         } else {
-            alert('Bir hata oluştu.');
+            toast.error(result.message);
         }
     };
 
@@ -174,7 +169,7 @@ const UserProfile = () => {
                 closeModal();
 
             } else {
-                alert('Bir hata oluştu.');
+                toast.error(data.message);
 
             }
         }
@@ -203,26 +198,22 @@ const UserProfile = () => {
             body: JSON.stringify({old_password: oldPassword, password: newPassword}),
         }).then((data) => data.json())
             .then((data) => {
-                // başarılı olursa bu response {
-                //     "id": 2,
-                //         "name": "adsfafas",
-                //         "email": "123@gmail.com",
-                //         "email_verified_at": null,
-                //         "created_at": "2023-08-17T23:13:20.000000Z",
-                //         "updated_at": "2023-08-17T23:18:36.000000Z"
-                // }
-                // hata olursa bu response {"error":"Old password is incorrect"}
+                console.log("data", data)
+
                 if (data.error) {
-                    alert(data.error);
+                    toast.error(data.error);
                 }
+
                 if (data.email) {
-                    alert('Password changed successfully.');
+                    toast.success('password changed');
                     setOldPassword('');
                     setNewPassword('');
                     setNewPassword_repeat('');
                 }
             })
-            .catch((error) => console.error('Something went wrong:', error));
+            .catch((error) => {
+                toast.error('Something went wrong:', error);
+            } );
     };
 
     const removeFolow = (type, value) => {

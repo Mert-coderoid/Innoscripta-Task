@@ -249,3 +249,9 @@
 .custom-right-arrow {
   right: -15px; /* Sağ butonun konumu */
 }
+
+.active-page {
+  background-color: #007bff; /* Parlak bir renk */
+  color: white;
+  border-color: #007bff;
+}

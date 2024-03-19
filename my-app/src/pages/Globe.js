@@ -182,8 +182,6 @@ const Globe = () => {
     };
 
     const handleFollow = (type, value) => {
-
-        // Daha önce takip edilip edilmediğini kontrol et
         const isFollowed = preferences[type].includes(value);
         const updatedPreferences = isFollowed ? preferences[type].filter(item => item !== value) : [...preferences[type], value];
 
@@ -217,29 +215,29 @@ const Globe = () => {
         pauseOnHover: true,
         nextArrow: <SlickArrowRight />,
         prevArrow: <SlickArrowLeft />
-    };    
+    };
 
     function SlickArrowLeft({ className, style, onClick }) {
         return (
-          <div
-            className={`${className} custom-left-arrow`}
-            style={{ ...style, display: "block" }}
-            onClick={onClick}
-          />
+            <div
+                className={`${className} custom-left-arrow`}
+                style={{ ...style, display: "block" }}
+                onClick={onClick}
+            />
         );
-      }
-      
-      function SlickArrowRight({ className, style, onClick }) {
-        return (
-          <div
-            className={`${className} custom-right-arrow`}
-            style={{ ...style, display: "block" }}
-            onClick={onClick}
-          />
-        );
-      }
+    }
 
-      
+    function SlickArrowRight({ className, style, onClick }) {
+        return (
+            <div
+                className={`${className} custom-right-arrow`}
+                style={{ ...style, display: "block" }}
+                onClick={onClick}
+            />
+        );
+    }
+
+
     return (
         // Scene
         <div>
@@ -269,14 +267,14 @@ const Globe = () => {
                                     <a href={article.url} target="_blank"
                                         className=" px-4 py-2 rounded hover:bg-blue-600">Read More
                                     </a>
-                                    </div>
+                                </div>
 
                             </div>
                         ))}
                     </div>
                 </div>
-                
-                <div className="bg-black p-4 rounded-lg mx-auto">
+
+                <div className="bg-gray-800 p-4 rounded-lg mx-auto">
                     <Slider {...sliderSettings} className="slider">
                         {articles.slice(Math.max(articles.length - 5, 1)).map((article) => (
                             <div key={article.id} className="text-white">
@@ -285,21 +283,21 @@ const Globe = () => {
                                         src={article.image_url || 'default-image.jpg'}
                                         alt={article.title}
                                         className="object-cover rounded mb-4"
-                                        style={{ height: "12rem", width: "auto" }} 
+                                        style={{ height: "12rem", width: "auto" }}
                                     />
                                 </div>
                                 <div className="text-center">
-                                <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
-                                <p className="text-sm mb-2">{article.description}</p>
-                                <p className="text-sm mb-2">
-                                    Published: {new Date(article.published_at).toLocaleDateString()}
-                                </p>
+                                    <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
+                                    <p className="text-sm mb-2">{article.description}</p>
+                                    <p className="text-sm mb-2">
+                                        Published: {new Date(article.published_at).toLocaleDateString()}
+                                    </p>
                                 </div>
                             </div>
                         ))}
                     </Slider>
                 </div>
-                
+
 
 
                 <div className="mb-8 p-4 rounded-lg text-center">
@@ -418,29 +416,25 @@ const Globe = () => {
                                     <a href={article.url} target="_blank"
                                         className=" px-4 py-2 rounded hover:bg-blue-600">Read More
                                     </a>
-                                </div>        
+                                </div>
 
                             </div>
 
                         </div>))}
                 </div>
                 <div className="flex justify-center mt-4 space-x-2">
-                    {paginationLinks && paginationLinks.map((link, index) => {
-                        return (
-                            <button
-                                key={index}
-                                onClick={() => link.url && handlePageChange(link.url)}
-                                disabled={!link.url}
-                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                className={`
-                    px-3 py-1 rounded
-                    ${link.url ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-gray-300 cursor-not-allowed'}
-                `}
-                            >
-                            </button>
-                        )
-                    })}
+                    {paginationLinks && paginationLinks.map((link, index) => (
+                        <button
+                            key={index}
+                            onClick={() => link.url && handlePageChange(link.url)}
+                            disabled={!link.url}
+                            dangerouslySetInnerHTML={{ __html: link.label }}
+                            className={`px-3 py-1 rounded ${link.url ? 'bg-gray-800 hover:bg-blue-600 text-white' : 'bg-gray-300 cursor-not-allowed'} ${link.active ? 'active-page' : ''}`}
+                        >
+                        </button>
+                    ))}
                 </div>
+
 
             </div>
         </div>
@@ -448,24 +442,24 @@ const Globe = () => {
 };
 
 const TopArticles = ({ articles }) => {
-  if (!articles || articles.length === 0) return null;
+    if (!articles || articles.length === 0) return null;
 
-  return (
-    <div className="top-articles-container">
-      {articles.slice(0, 2).map((article) => (
-        <div key={article.id} className="mb-4">
-          <img src={article.image_url || 'default-image.jpg'} alt={article.title} className="w-full h-48 object-cover rounded mb-4" />
-          <div className="article-content">
-            <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
-            <p className="text-sm">{article.description}</p>
-            <p className="article-published-at">
-              Published: {new Date(article.published_at).toLocaleDateString()}
-            </p>
-          </div>
+    return (
+        <div className="top-articles-container">
+            {articles.slice(0, 2).map((article) => (
+                <div key={article.id} className="mb-4">
+                    <img src={article.image_url || 'default-image.jpg'} alt={article.title} className="w-full h-48 object-cover rounded mb-4" />
+                    <div className="article-content">
+                        <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
+                        <p className="text-sm">{article.description}</p>
+                        <p className="article-published-at">
+                            Published: {new Date(article.published_at).toLocaleDateString()}
+                        </p>
+                    </div>
+                </div>
+            ))}
         </div>
-      ))}
-    </div>
-  );
+    );
 };
 
 export default Globe;

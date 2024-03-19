@@ -54,7 +54,7 @@ function Header() {
     };
 
     return (
-        <header className="bg-primary p-4">
+        <header className="bg-gray-800 p-4">
             <nav className="container mx-auto flex flex-wrap items-center justify-between nav-container">
                 <div className="flex items-center">
                     <img src="/logo_white.png" alt="Logo" className="w-10 h-10 mr-2" style={{ width: 50, height: 50 }} />
