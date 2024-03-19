@@ -8,12 +8,8 @@ import Login from './pages/LoginSignupPage';
 import Profile from './pages/UserProfile';
 import Feed from './pages/NewsFeed';
 import SignUp from './pages/SignupPage';
-import Globe from './pages/Globe';
-// import { Canvas } from '@react-three/fiber';
-import Sahne from './pages/BasitKure';
-import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import TestToast from './pages/toast';
+import { ToastContainer } from 'react-toastify';
 
 
 import './styles/App.css';
@@ -30,8 +26,6 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<SignUp />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/globe" element={<Globe />} />
-            <Route path="/toast" element={<TestToast />} />
           </Routes>
         </main>
         <Footer />

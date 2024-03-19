@@ -255,3 +255,72 @@
   color: white;
   border-color: #007bff;
 }
+
+.read-more-button {
+  display: inline-block;
+  background-color: rgb(31, 41, 55);
+  color: white;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.read-more-button:hover {
+  background-color: rgba(31, 41, 55, 0.85);
+}
+
+.globe-info {
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.globe-info h2 {
+  color: #333;
+  font-size: 24px;
+}
+
+.globe-info h2 a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.globe-info p {
+  color: #666;
+  font-size: 16px;
+}
+
+
+
+.sub-globe-globe-info {
+
+  width: 100%;
+  height: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sub-globe-card {
+  background-color: #fff;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.sub-globe-card-body {
+  padding: 0;
+}
+
+.sub-globe-card-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.sub-globe-card-text {
+  margin-bottom: 1rem;
+}

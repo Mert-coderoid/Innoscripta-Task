@@ -6,8 +6,9 @@ import axios from 'axios';
 import earth from '../assets/textures/world.jpg';
 import { MathUtils, Vector3 } from 'three';
 import { useLoader } from '@react-three/fiber';
+import ReadMoreButton from './ReadMoreButton';
 
-const Point = ({ name, latitude, longitude, onClick }) => {
+const Point = ({ name, url, publishedAt, latitude, longitude, onClick }) => {
     const [hovered, setHovered] = useState(false);
     const position = React.useMemo(() => {
         const phi = MathUtils.degToRad(90 - latitude);
@@ -52,15 +53,20 @@ const SimpleGlobe = ({ onPointClick, newsPoints }) => {
 const Scene = () => {
     const [newsPoints, setNewsPoints] = useState([]);
     const [selectedPoint, setSelectedPoint] = useState(null);
-    
+
     useEffect(() => {
         axios.get('http://localhost:8080/api/location-articles')
+            // $articles = Article::whereNotNull('latitude')->whereNotNull('longitude')->select('id', 'title', 'location', 'url', 'published_at', 'latitude', 'longitude')->get();
+
             .then(response => {
+                console.log(response.data);
                 const points = response.data.map(article => ({
                     id: article.id,
                     name: article.title,
-                    latitude: parseFloat(article.latitude),
-                    longitude: parseFloat(article.longitude),
+                    url: article.url,
+                    publishedAt: article.published_at,
+                    latitude: article.latitude,
+                    longitude: article.longitude,
                     onClick: handlePointClick // onClick tanımı burada güncellendi
                 }));
                 setNewsPoints(points);
@@ -81,15 +87,18 @@ const Scene = () => {
                 <SimpleGlobe onPointClick={handlePointClick} newsPoints={newsPoints} />
                 <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
             </Canvas>
-            <div className="globe-info">
+            <div className="sub-globe-globe-info p-3 mb-3">
                 {selectedPoint && (
-                    <div>
-                        <h2>{selectedPoint.name}</h2>
-                        <p>Latitude: {selectedPoint.latitude}</p>
-                        <p>Longitude: {selectedPoint.longitude}</p>
+                    <div className="sub-globe-card">
+                        <div className="sub-globe-card-body">
+                            <h5 className="sub-globe-card-title">{selectedPoint.name}</h5>
+                            <p className="sub-globe-card-text">{selectedPoint.publishedAt}</p>
+                            <ReadMoreButton url={selectedPoint.url} />
+                        </div>
                     </div>
                 )}
             </div>
+
         </div>
     );
 };

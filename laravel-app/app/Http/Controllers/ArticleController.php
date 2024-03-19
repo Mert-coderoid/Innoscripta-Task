@@ -104,7 +104,7 @@ class ArticleController extends Controller
 
     public function getLocationArticles(): JsonResponse
     {
-        $articles = Article::whereNotNull('latitude')->whereNotNull('longitude')->select('id', 'title', 'location', 'latitude', 'longitude')->get();
+        $articles = Article::whereNotNull('latitude')->whereNotNull('longitude')->select('id', 'title', 'location', 'url', 'published_at', 'latitude', 'longitude')->get();
         return response()->json($articles);
     }
 

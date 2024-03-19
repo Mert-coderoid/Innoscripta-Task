@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Scene from '../components/Globe';
+import ReadMoreButton from '../components/ReadMoreButton';
 
 const HomePage = () => {
     const token = localStorage.getItem('token');
@@ -29,6 +30,7 @@ const HomePage = () => {
         authors: [], categories: [], sources: []
     });
     const [locationArticles, setLocationArticles] = useState([]);
+    const [noPhotoArticles, setNoPhotoArticles] = useState([]);
 
     const parseJSONSafely = (value) => {
         try {
@@ -44,6 +46,7 @@ const HomePage = () => {
 
     const applyFilters = (page = 1) => {
         const query = new URLSearchParams();
+        filters.has_image = "yes";
         for (const [key, value] of Object.entries(filters)) {
             if (value) {
                 query.append(key, value);
@@ -76,30 +79,41 @@ const HomePage = () => {
             });
     };
 
+    const fetchNoPhotoArticles = (page = 1) => {
+        const query = new URLSearchParams();
+        filters.has_image = "no";
+        for (const [key, value] of Object.entries(filters)) {
+            if (value) {
+                query.append(key, value);
+            }
+        }
+        fetch(process.env.REACT_APP_BASE_URL + `/api/filter-articles?page=${page}&${query.toString()}&sort_order=${filters.sort_order}`, {
+            method: 'GET', headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setNoPhotoArticles(data.data);
+                console.log('No Photo Articles:', data)
+            })
+            .catch((error) => {
+                console.error('Sources loading failed:', error);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
+
     const handlePageChange = (url) => {
         const page = new URL(url).searchParams.get("page");
         applyFilters(page);
     };
 
-    // http://localhost:8080/api/location-articles
-    const fetchLocationArticles = () => {
-        fetch(process.env.REACT_APP_BASE_URL + '/api/location-articles', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${token}` },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setLocationArticles(data);
-                console.log('Location Articles:', data);
-            })
-            .catch((error) => {
-                console.error('Location Articles loading failed:', error);
-            });
-    };
-
-
     useEffect(() => {
         applyFilters();
+        fetchNoPhotoArticles();
+
         fetch(process.env.REACT_APP_BASE_URL + '/api/preferences', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
@@ -143,6 +157,7 @@ const HomePage = () => {
 
             });
     }, [token]);
+
     const handlePreferencesUpdate = (type, value) => {
 
 
@@ -168,8 +183,6 @@ const HomePage = () => {
     };
 
     const handleFollow = (type, value) => {
-
-        // Daha önce takip edilip edilmediğini kontrol et
         const isFollowed = preferences[type].includes(value);
         const updatedPreferences = isFollowed ? preferences[type].filter(item => item !== value) : [...preferences[type], value];
 
@@ -201,56 +214,105 @@ const HomePage = () => {
         autoplay: true,
         autoplaySpeed: 3000,
         pauseOnHover: true,
+        nextArrow: <SlickArrowRight />,
+        prevArrow: <SlickArrowLeft />
     };
+
+    function SlickArrowLeft({ className, style, onClick }) {
+        return (
+            <div
+                className={`${className} custom-left-arrow`}
+                style={{ ...style, display: "block" }}
+                onClick={onClick}
+            />
+        );
+    }
+
+    function SlickArrowRight({ className, style, onClick }) {
+        return (
+            <div
+                className={`${className} custom-right-arrow`}
+                style={{ ...style, display: "block" }}
+                onClick={onClick}
+            />
+        );
+    }
+
 
     return (
         // Scene
         <div>
-            <div className="container mx-auto p-4" style={{ height: '50vh' }}>
-                <Scene />
-            </div>
-            <div className={`container mx-auto p-4 ${isLoading ? 'loading' : ''}`}>
-                <svg id='patternId' width='100%' height='70%'
-                    style={{ position: 'absolute', top: 0, left: 0, zIndex: -1 }}
-                    xmlns='http://www.w3.org/2000/svg'>
-                    <defs>
-                        <pattern id='a' patternUnits='userSpaceOnUse' width='30' height='30'
-                            patternTransform='scale(2) rotate(0)'>
-                            <rect x='0' y='0' width='100%' height='100%' fill='hsla(0,0%,100%,1)' />
-                            <path d='M0 22.5h30v15H0zm15-15h30v15H15m-30-15h30v15h-30zm15-15h30v15H0z' stroke-width='0.5'
-                                stroke='hsla(207, 21%, 87%, 1)' fill='none' />
-                        </pattern>
-                    </defs>
-                    <rect width='800%' height='800%' transform='translate(-78,-56)' fill='url(#a)' />
-                </svg>
-                <div className="mb-12 p-4 rounded-lg">
+            <div className={`container mx-auto p-4 text-left ${isLoading ? 'loading' : ''}`}>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="rounded-lg p-4">
+                        <TopArticles articles={articles} />
+                    </div>
+                    <div className="rounded-lg p-4">
+                        {/* bir div içinde live anlamına gelen <span className="live-dot-shining"></span> ve yanından Live News yazısı gelecek */}
+                        <div className="live-news-container text-center">
+                            <span className="live-dot-shining" style={{ marginRight: '30px', padding: '5px' }}></span>
+                            <span className="live-news-text font-semibold">Live News</span>
+                        </div>
+                        <Scene newsLocations={locationArticles} />
+                    </div>
+                    <div className="rounded-lg p-4">
+                        {noPhotoArticles.slice(0, 5).map((article) => (
+                            // show no photo articles here with link to read more
+                            <div key={article.id} className="mb-4">
+                                <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
+                                <p className="text-sm mb-2">{article.description}</p>
+                                <div className="flex justify-between items-center">
+                                    <p className="text-sm mb-3 article-published-at">
+                                        Published: {new Date(article.published_at).toLocaleDateString()}
+                                    </p>
+                                    {/* <a href={article.url} target="_blank"
+                                        className=" px-4 py-2 rounded hover:bg-blue-600">Read More
+                                    </a> */}
+                                    <ReadMoreButton url={article.url} />
+                                </div>
 
-                    <Slider {...sliderSettings}>
-                        {articles.slice(0, 5).map((article) => (
-                            <div key={article.id}>
-                                <div className="flex justify-center items-center h-96 mb-4">
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="bg-gray-800 p-4 rounded-lg mx-auto">
+                    <Slider {...sliderSettings} className="slider">
+                        {articles.slice(Math.max(articles.length - 5, 1)).map((article) => (
+                            <div key={article.id} className="text-white">
+                                <div className="flex justify-center items-center mb-4">
                                     <img
                                         src={article.image_url || 'default-image.jpg'}
                                         alt={article.title}
-                                        className="w-full h-96 object-cover rounded mb-4"
+                                        className="object-cover rounded mb-4"
+                                        style={{ height: "12rem", width: "auto" }}
                                     />
                                 </div>
-
-                                <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
-                                <p className="text-sm mb-2">{article.description}</p>
-                                <p className="text-sm mb-2">
-                                    Published: {new Date(article.published_at).toLocaleDateString()}
-                                </p>
+                                <div className="text-center">
+                                    <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
+                                    <p className="text-sm mb-2">{article.description}</p>
+                                    <p className="text-sm mb-2">
+                                        Published: {new Date(article.published_at).toLocaleDateString()}
+                                    </p>
+                                </div>
                             </div>
                         ))}
                     </Slider>
                 </div>
-                <div className="mb-8 p-4 rounded-lg">
-                    <h1 className="text-3xl font-semibold mb-4 p-4">
+
+
+
+                <div className="mb-8 p-4 rounded-lg text-center">
+                    <h1 className="text-3xl font-semibold mb-4 p-4 rounded-lg all-upper-cool-font">
                         You can find the latest news here.
                     </h1>
                     <input type="text" name="keyword" placeholder="Search"
                         onChange={handleFilterChange}
+                        onKeyPress={(event) => {
+                            if (event.key === 'Enter') {
+                                applyFilters(1);
+                            }
+                        }}
                         className="border p-2 rounded mr-2 mb-2 bg-white" />
                     <select name="category" onChange={handleFilterChange} className="border p-2 rounded mr-2 mb-2 bg-white">
                         <option value="">All Categories</option>
@@ -290,7 +352,7 @@ const HomePage = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {articles.map((article) => (
-                        <div key={article.id} className="border rounded-lg p-4 shadow-md flex flex-col justify-between">
+                        <div key={article.id} className="rounded-lg p-4 flex flex-col justify-between">
                             <div>
                                 <img src={article.image_url || 'default-image.jpg'} alt={article.title}
                                     className="w-full h-48 object-cover rounded mb-4" />
@@ -347,37 +409,64 @@ const HomePage = () => {
                                         </div>
                                     </div>
                                 )}
-                                <p className="text-sm mb-2">
-                                    Published: {new Date(article.published_at).toLocaleDateString()}
-                                </p>
+                                {/* bir div içerisinde solda published tarihi sağda ise read more butonu olacak */}
+
+                                <div className="flex justify-between items-center">
+                                    <p className="text-sm mb-3 article-published-at">
+                                        Published: {new Date(article.published_at).toLocaleDateString()}
+                                    </p>
+                                    {/* <a href={article.url} target="_blank"
+                                        className=" px-4 py-2 rounded hover:bg-blue-600">Read More
+                                    </a> */}
+                                    <ReadMoreButton url={article.url} />
+                                </div>
 
                             </div>
-                            <a href={article.url} target="_blank" rel="noopener noreferrer"
-                                className="text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 self-end mt-4">Read
-                                more</a>
+
                         </div>))}
                 </div>
                 <div className="flex justify-center mt-4 space-x-2">
-                    {paginationLinks && paginationLinks.map((link, index) => {
-                        return (
-                            <button
-                                key={index}
-                                onClick={() => link.url && handlePageChange(link.url)}
-                                disabled={!link.url}
-                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                className={`
-                    px-3 py-1 rounded
-                    ${link.url ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-gray-300 cursor-not-allowed'}
-                `}
-                            >
-                            </button>
-                        )
-                    })}
+                    {paginationLinks && paginationLinks.map((link, index) => (
+                        <button
+                            key={index}
+                            onClick={() => link.url && handlePageChange(link.url)}
+                            disabled={!link.url}
+                            dangerouslySetInnerHTML={{ __html: link.label }}
+                            className={`px-3 py-1 rounded ${link.url ? 'bg-gray-800 hover:bg-blue-600 text-white' : 'bg-gray-300 cursor-not-allowed'} ${link.active ? 'active-page' : ''}`}
+                        >
+                        </button>
+                    ))}
                 </div>
+
 
             </div>
         </div>
     );
 };
 
+const TopArticles = ({ articles }) => {
+    if (!articles || articles.length === 0) return null;
+
+    return (
+        <div className="top-articles-container">
+            {articles.slice(0, 2).map((article) => (
+                <div key={article.id} className="mb-4">
+                    <img src={article.image_url || 'default-image.jpg'} alt={article.title} className="w-full h-48 object-cover rounded mb-4" />
+                    <div className="article-content">
+                        <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
+                        <p className="text-sm">{article.description}</p>
+                        <div className="flex justify-between items-center">
+                            <p className="text-sm mb-3 article-published-at">
+                                Published: {new Date(article.published_at).toLocaleDateString()}
+                            </p>
+                            <ReadMoreButton url={article.url} />
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
+
 export default HomePage;
+
