@@ -12,7 +12,7 @@ const Point = ({ name, url, publishedAt, latitude, longitude, onClick }) => {
     const [hovered, setHovered] = useState(false);
     const position = React.useMemo(() => {
         const phi = MathUtils.degToRad(90 - latitude);
-        const theta = MathUtils.degToRad(longitude + 90);
+        const theta = MathUtils.degToRad(longitude - 270 );
         return new Vector3().setFromSphericalCoords(1, phi, theta);
     }, [latitude, longitude]);
 
@@ -55,7 +55,9 @@ const Scene = () => {
     const [selectedPoint, setSelectedPoint] = useState(null);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/location-articles')
+        // axios.get('http://localhost:8080/api/location-articles')
+        // process.env.REACT_APP_BASE_URL + '/api/location-articles'
+        axios.get(process.env.REACT_APP_BASE_URL + `/api/location-articles`)
             // $articles = Article::whereNotNull('latitude')->whereNotNull('longitude')->select('id', 'title', 'location', 'url', 'published_at', 'latitude', 'longitude')->get();
 
             .then(response => {

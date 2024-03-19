@@ -12,8 +12,8 @@ class ArticleLocationService
 
     public function __construct()
     {
-        // $this->client = new Client(['base_uri' => 'http://flask-app:5000']);
-        $this->client = new Client(['base_uri' => 'http://localhost:5000']);
+        $this->client = new Client(['base_uri' => 'http://flask-app:5000']);
+        // $this->client = new Client(['base_uri' => 'http://localhost:5000']);
     }
 
     public function updateArticleLocations(): bool

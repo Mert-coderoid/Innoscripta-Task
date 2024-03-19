@@ -41,7 +41,7 @@ class FetchArticles extends Command
     {
         try {
             $articleController = new ArticleController();
-            $articleController->fetchArticles( new NewsAPIService(), new TimesService(), new GuardianService() );
+            $articleController->fetchArticles( new NewsAPIService(), new TimesService(), new GuardianService(), new ArticleLocationService() );
             $this->info('Articles fetched successfully');
         } catch (\Exception $e) {
             $this->error('Error fetching articles: ' . $e->getMessage());
